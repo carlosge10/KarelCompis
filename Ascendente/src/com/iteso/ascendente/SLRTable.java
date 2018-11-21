@@ -116,7 +116,7 @@ public class SLRTable {
 	public TokenList getRule(int i)
 	{
 		try {
-			return g.grammar.get(i-1);
+			return g.grammar.get(i);
 		}
 		catch(Exception e) 
 		{
