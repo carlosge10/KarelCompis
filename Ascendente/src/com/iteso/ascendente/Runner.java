@@ -1,17 +1,18 @@
 package com.iteso.ascendente;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.Stack;
 
 public class Runner {
-	
 	public static void main(String []args) {
 		try {
 			File file;
-			BufferedReader br;
 			file = new File("src/input.txt");
+			BufferedReader br;
 			br = new BufferedReader(new FileReader(file));
 			System.out.println("reading file...");
 			SLRTable table = new SLRTable(file, br);
@@ -43,8 +44,12 @@ public class Runner {
 		return tl;
 	}
 	
-	public static boolean solve(SLRTable table, TokenList tl) 
+	public static boolean solve(SLRTable table, TokenList tl) throws Exception
 	{
+		KarelRobot k = new KarelRobot();
+		BufferedWriter bw = null;
+		bw = new BufferedWriter(new FileWriter("src/output.txt"));
+		
 		Token acc;
 		int ptr = 0;
 		Stack<Token> symbols = new Stack<Token>();
@@ -100,6 +105,9 @@ public class Runner {
 			else if(acc.tclass.equals("r")) 
 			{
 				TokenList prod = table.getRule(Integer.parseInt(acc.value));
+				k.executeLine(prod);
+				if(prod.tl.get(2).value.equals("I"))
+					bw.write("Karel: " + k.toString()+"\n");
 				if(prod == null) 
 				{
 					return false;
@@ -124,6 +132,7 @@ public class Runner {
 			}
 			else if(acc.tclass.equals("acc")) {
 				System.out.println("Aceptada");
+				bw.close();
 				return true;
 			}
 		}
