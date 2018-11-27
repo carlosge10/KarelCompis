@@ -6,9 +6,44 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Runner {
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
+
+public class Runner /*extends BasicGame*/{
+	/*public Runner(String gamename)
+	{
+		super(gamename);
+	}
+	@Override
+	public void init(GameContainer gc) throws SlickException {}
+
+	@Override
+	public void update(GameContainer gc, int i) throws SlickException {}
+
+	@Override
+	public void render(GameContainer gc, Graphics g) throws SlickException
+	{
+		g.drawString("Howdy!", 10, 10);
+	}*/
 	public static void main(String []args) {
+		/*try
+		{
+			AppGameContainer appgc;
+			appgc = new AppGameContainer(new Runner("Simple Slick Game"));
+			appgc.setDisplayMode(640, 480, false);
+			appgc.start();
+		}
+		catch (SlickException ex)
+		{
+			Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		*/
 		try {
 			File file;
 			file = new File("src/input.txt");
@@ -47,6 +82,7 @@ public class Runner {
 	public static boolean solve(SLRTable table, TokenList tl) throws Exception
 	{
 		KarelRobot k = new KarelRobot();
+		KarelWorld kw = new KarelWorld();
 		BufferedWriter bw = null;
 		bw = new BufferedWriter(new FileWriter("src/output.txt"));
 		

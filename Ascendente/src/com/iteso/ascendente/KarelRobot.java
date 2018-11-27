@@ -2,6 +2,8 @@ package com.iteso.ascendente;
 
 public class KarelRobot {
 	
+	public KarelWorld world;
+	
 	public int posx;
 	public int posy;
 	
@@ -12,6 +14,8 @@ public class KarelRobot {
 	
 	public boolean on;
 	
+//	public boolean lastBooleanStatement;
+	
 	public KarelRobot() 
 	{
 		posx = 0;
@@ -19,6 +23,8 @@ public class KarelRobot {
 		orientation = 0;
 		beepersInBeeperBag = 0;
 		on = true;
+		world = new KarelWorld();
+//		lastBooleanStatement = true;
 	}
 	
 	public void executeLine(TokenList prod) 
@@ -27,12 +33,69 @@ public class KarelRobot {
 		{
 			executeInstruction(prod.tl.get(2).value);
 		}
+		else if(prod.tl.get(0).value.equals("CS")) 
+		{
+			
+		}
 		else if(prod.tl.get(0).value.equals("BE")) 
 		{
+			
 			return ;
+		}
+		else if(prod.tl.get(0).value.equals("BS")) 
+		{
+			evaluateBooleanStatement(prod.tl.get(2).value);
 		}
 	}
 
+	public void evaluateBooleanStatement(String statement) 
+	{
+		if(statement.equals("facingNorth")) 
+		{
+			lastBooleanStatement &= this.orientation == 0;
+		}
+		else if(statement.equals("facingSouth")) 
+		{
+			lastBooleanStatement &= this.orientation == 2;			
+		}
+		else if(statement.equals("facingEast")) 
+		{
+			lastBooleanStatement &= this.orientation == 1;
+		}
+		else if(statement.equals("facingWest")) 
+		{
+			lastBooleanStatement &= this.orientation == 3;
+		}
+		else if(statement.equals("anyBeepersInBeeperBag")) 
+		{
+			lastBooleanStatement &= this.beepersInBeeperBag > 0 ;
+		}
+		else if(statement.equals("frontIsClear")) 
+		{
+			lastBooleanStatement &= world.directionBlockedAt(posx, posy, orientation);
+		}
+		else if(statement.equals("rightIsClear")) 
+		{
+			lastBooleanStatement &= world.directionBlockedAt(posx, posy, (orientation + 3) %4);
+		}
+		else if(statement.equals("leftIsClear")) 
+		{
+			lastBooleanStatement &= world.directionBlockedAt(posx, posy, (orientation + 1) %4);
+		}
+		else if(statement.equals("backIsClear")) 
+		{
+			lastBooleanStatement &= world.directionBlockedAt(posx, posy, (orientation + 2) %4);
+		}
+		else if(statement.equals("nextToABeeper")) 
+		{
+			lastBooleanStatement &= world.beeperInPos(posx, posy);
+		}
+		else 
+		{
+			//do nothing
+		}
+	}
+	
 	public void executeInstruction(String inst) 
 	{
 		if(!on)

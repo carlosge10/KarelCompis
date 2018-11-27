@@ -218,7 +218,7 @@ r 5, , , ,r 5, , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
  , , , ,88,15,17,16, , ,
  , , , , ,31,17,16, , ,
  , , , , , , , , , ,
-13 
+40
 program,program, 
 (),() 
 {,{ 
@@ -228,7 +228,34 @@ move,move
 move,move 
 (),() 
 ;,; 
+turnright,turnright 
+(),() 
+;,; 
+turnright,turnright 
+(),() 
+;,;
+turnright,turnright 
+(),() 
+;,;
+turnright,turnright 
+(),() 
+;,; 
 turnleft,turnleft 
+(),() 
+;,; 
+turnleft,turnleft 
+(),() 
+;,;
+turnleft,turnleft 
+(),() 
+;,;
+turnleft,turnleft 
+(),() 
+;,; 
+pickbeeper,pickbeeper 
+(),() 
+;,; 
+putbeeper,putbeeper 
 (),() 
 ;,; 
 },}
