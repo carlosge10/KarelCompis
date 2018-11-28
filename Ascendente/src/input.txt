@@ -1,4 +1,4 @@
-SP,S,Funcs,Func,Ls,L,I,CS,BE,BS 
+SP,S,Funcs,Func,Ls,L,I,CS,BE,BS
 program,(),{,},fun,move,;,putbeeper,pickbeeper,turnleft,turnright,turnoff,if,(,),else,while,iterate,num,|,&,facingNorth,facingSouth,facingEast,facingWest,anyBeepersInBeeperBag,frontIsClear,rightIsClear,leftIsClear,backIsClear,nextToABeeper,!
 36
 SP > S
@@ -218,6 +218,29 @@ r 5, , , ,r 5, , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
  , , , ,88,15,17,16, , ,
  , , , , ,31,17,16, , ,
  , , , , , , , , , ,
+21
+program,program,
+(),()
+{,{
+if,if
+(,(
+frontIsClear,frontIsClear
+|,|
+!,!
+facingNorth,facingNorth
+&,&
+!,!
+(,(
+nextToABeeper,nextToABeeper
+),)
+),)
+{,{
+move,move
+(),()
+;,;
+},}
+},}
+
 40
 program,program, 
 (),() 

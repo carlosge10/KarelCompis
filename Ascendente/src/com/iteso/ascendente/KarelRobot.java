@@ -1,5 +1,7 @@
 package com.iteso.ascendente;
 
+import java.util.Stack;
+
 public class KarelRobot {
 	
 	public KarelWorld world;
@@ -35,64 +37,107 @@ public class KarelRobot {
 		}
 		else if(prod.tl.get(0).value.equals("CS")) 
 		{
-			
+			return;
 		}
 		else if(prod.tl.get(0).value.equals("BE")) 
 		{
-			
 			return ;
 		}
 		else if(prod.tl.get(0).value.equals("BS")) 
 		{
-			evaluateBooleanStatement(prod.tl.get(2).value);
+			return;
 		}
 	}
 
-	public void evaluateBooleanStatement(String statement) 
+	public void evaluateBooleanExpression(TokenList prod, Stack<Token> symbols)//recieve symbol stack, operate with the stack 
 	{
+		if(symbols.size() == 0)
+		{
+			return;
+		}
+		if(symbols.size() == 1) 
+		{
+			prod.tl.get(0).bExprValue = symbols.peek().bExprValue;
+			return;
+		}
+		if(prod.tl.size() == 3) 
+		{
+			prod.tl.get(0).bExprValue = symbols.peek().bExprValue;
+		}
+		else  
+		{
+			String statement = prod.tl.get(3).value;
+			if(statement.equals("|")) 
+			{
+				prod.tl.get(0).bExprValue = symbols.get(symbols.size()-3).bExprValue | symbols.get(symbols.size()-1).bExprValue;
+			}
+			else if(statement.equals("&")) 
+			{
+				prod.tl.get(0).bExprValue = symbols.get(symbols.size()-3).bExprValue & symbols.get(symbols.size()-1).bExprValue;
+			}
+			else 
+			{
+				return;
+			}
+		}
+	}
+	
+	public void evaluateBooleanStatement(TokenList prod, Stack<Token> symbols) //recieve symbol stack, operate with the stack
+	{
+		
+		String statement = prod.tl.get(2).value;
 		if(statement.equals("facingNorth")) 
 		{
-			lastBooleanStatement &= this.orientation == 0;
+			prod.tl.get(0).bExprValue = this.orientation == 0;
 		}
 		else if(statement.equals("facingSouth")) 
 		{
-			lastBooleanStatement &= this.orientation == 2;			
+			prod.tl.get(0).bExprValue = this.orientation == 2;			
 		}
 		else if(statement.equals("facingEast")) 
 		{
-			lastBooleanStatement &= this.orientation == 1;
+			prod.tl.get(0).bExprValue = this.orientation == 1;
 		}
 		else if(statement.equals("facingWest")) 
 		{
-			lastBooleanStatement &= this.orientation == 3;
+			prod.tl.get(0).bExprValue = this.orientation == 3;
 		}
 		else if(statement.equals("anyBeepersInBeeperBag")) 
 		{
-			lastBooleanStatement &= this.beepersInBeeperBag > 0 ;
+			prod.tl.get(0).bExprValue = this.beepersInBeeperBag > 0 ;
 		}
 		else if(statement.equals("frontIsClear")) 
 		{
-			lastBooleanStatement &= world.directionBlockedAt(posx, posy, orientation);
+			prod.tl.get(0).bExprValue = !world.directionBlockedAt(posx, posy, orientation);
 		}
 		else if(statement.equals("rightIsClear")) 
 		{
-			lastBooleanStatement &= world.directionBlockedAt(posx, posy, (orientation + 3) %4);
+			prod.tl.get(0).bExprValue = !world.directionBlockedAt(posx, posy, (orientation + 3) %4);
 		}
 		else if(statement.equals("leftIsClear")) 
 		{
-			lastBooleanStatement &= world.directionBlockedAt(posx, posy, (orientation + 1) %4);
+			prod.tl.get(0).bExprValue = !world.directionBlockedAt(posx, posy, (orientation + 1) %4);
 		}
 		else if(statement.equals("backIsClear")) 
 		{
-			lastBooleanStatement &= world.directionBlockedAt(posx, posy, (orientation + 2) %4);
+			prod.tl.get(0).bExprValue = !world.directionBlockedAt(posx, posy, (orientation + 2) %4);
 		}
 		else if(statement.equals("nextToABeeper")) 
 		{
-			lastBooleanStatement &= world.beeperInPos(posx, posy);
+			prod.tl.get(0).bExprValue = world.beeperInPos(posx, posy);
+		}
+		else if(statement.equals("!")) 
+		{
+			prod.tl.get(0).bExprValue = ! symbols.peek().bExprValue;
+		}
+		else if(statement.equals("(")) 
+		{
+			prod.tl.get(0).bExprValue = symbols.peek().bExprValue;
 		}
 		else 
 		{
 			//do nothing
+			return;
 		}
 	}
 	

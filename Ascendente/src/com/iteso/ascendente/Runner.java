@@ -82,10 +82,14 @@ public class Runner /*extends BasicGame*/{
 	public static boolean solve(SLRTable table, TokenList tl) throws Exception
 	{
 		KarelRobot k = new KarelRobot();
-		KarelWorld kw = new KarelWorld();
 		BufferedWriter bw = null;
 		bw = new BufferedWriter(new FileWriter("src/output.txt"));
-		
+		for (int i = 0; i < 10; i++) {
+			for(int j = 0; j < 10; j++) {
+				System.out.print(k.world.walls[i][j]);
+			}
+			System.out.println();
+		}
 		Token acc;
 		int ptr = 0;
 		Stack<Token> symbols = new Stack<Token>();
@@ -101,6 +105,12 @@ public class Runner /*extends BasicGame*/{
 			System.out.println("PILA:");
 			for (Integer integer : st) {
 				System.out.print(integer+" ");
+			}
+			System.out.println();
+			//imprimir pila de symbolos
+			System.out.println("PILA:");
+			for (Token t : symbols) {
+				System.out.print(t.value+" ");
 			}
 			System.out.println();
 			//imrimir entrada desde ptr hasta el tamano
@@ -135,6 +145,8 @@ public class Runner /*extends BasicGame*/{
 			else if(acc.tclass.equals("s")) 
 			{
 				st.push(Integer.parseInt(acc.value));
+				//must push to symbols too, but what? -> I know, 
+				symbols.push(tl.tl.get(ptr));
 				ptr++;
 				System.out.println();
 			}
@@ -144,7 +156,30 @@ public class Runner /*extends BasicGame*/{
 				k.executeLine(prod);
 				if(prod.tl.get(2).value.equals("I"))
 					bw.write("Karel: " + k.toString()+"\n");
-				if(prod == null) 
+				
+				else if(prod.tl.get(0).value.equals("BS"))
+				{
+					//TODO:
+					//must evaluate the expression USING symbols stack, and save values there
+					k.evaluateBooleanStatement(prod, symbols);
+					String prodS="";
+					for(Token t : prod.tl)
+						prodS += t.value;
+					bw.write("Eval: " + prodS + ":" + prod.tl.get(0).bExprValue +"\n");
+					
+				}
+				else if(prod.tl.get(0).value.equals("BE"))
+				{
+					//TODO:
+					//must evaluate the expression USING symbols stack, and save values there
+					k.evaluateBooleanExpression(prod, symbols);
+					String prodS="";
+					for(Token t : prod.tl)
+						prodS += t.value;
+					bw.write("Eval: " + prodS + ":" + prod.tl.get(0).bExprValue +"\n");
+					
+				}
+				if(prod == null)
 				{
 					return false;
 				}
@@ -152,7 +187,7 @@ public class Runner /*extends BasicGame*/{
 				for(int i=2; i<prod.tl.size(); i++) 
 				{
 					st.pop();
-					if(!symbols.isEmpty())
+//					if(!symbols.isEmpty())
 						symbols.pop();
 				}
 				symbols.push(prod.tl.get(0));

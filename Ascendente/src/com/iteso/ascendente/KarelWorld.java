@@ -24,7 +24,8 @@ public class KarelWorld {
 			x = Integer.parseInt(s);
 			s = br.readLine();
 			y = Integer.parseInt(s);
-			for(int i=x; i>-1;i--) 
+//			for(int i=x-1; i>=0;i--) 
+			for(int i=0; i<x;i++)
 			{
 				s = br.readLine();
 				String [] arr = s.split(" ");
@@ -37,7 +38,8 @@ public class KarelWorld {
 			x = Integer.parseInt(s);
 			s = br.readLine();
 			y = Integer.parseInt(s);
-			for(int i=x; i>-1;i--) 
+//			for(int i=x-1; i>=0;i--) 
+			for(int i=0; i<x;i++)
 			{
 				s = br.readLine();
 				String [] arr = s.split(" ");
@@ -76,13 +78,26 @@ public class KarelWorld {
 			return true;
 		switch(dir) 
 		{
+			//java:walls[renglon][columna]
+			//north
 			case 0:
-				return walls[x][y+1] == 2 || walls[x][y+1] == 5;
+				if (x == 100)
+					return true;
+				return walls[x+1][y] == 2 || walls[x+1][y] == 5;
+			//east
 			case 1:
-				return walls[x-1][y] == 3 || walls[x-1][y] == 5;
+				if(y == 0)
+					return true;
+				return walls[x][y-1] == 3 || walls[x][y-1] == 5;
+			//south
 			case 2:
+				if(x==0)
+					return true;
 				return walls[x][y] == 2 || walls[x][y] == 5;
+			//west
 			case 3:
+				if(x==100)
+					return true;
 				return walls[x][y] == 3 || walls[x][y] == 5;
 		}
 		return false;
