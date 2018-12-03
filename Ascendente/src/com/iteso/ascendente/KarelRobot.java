@@ -9,6 +9,7 @@ public class KarelRobot {
 	public int posx;
 	public int posy;
 	public int tagNumber;
+	public int varNumber;
 
 	//north = 0, west = 1, south = 2, east = 3
 	public int orientation;
@@ -31,6 +32,7 @@ public class KarelRobot {
 		world = new KarelWorld();
 //		lastBooleanStatement = true;
 		tagNumber = 0;
+		varNumber = 0;
 		putbeeperError = false;
 		crashError = false;
 		pickbeeperError = false;

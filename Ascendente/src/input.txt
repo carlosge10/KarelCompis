@@ -218,22 +218,39 @@ r 5, , , ,r 5, , , , , , , , , , , , , , , , , , , , , , , , , , , , ,
  , , , ,88,15,17,16, , ,
  , , , , ,31,17,16, , ,
  , , , , , , , , , ,
-16
+33
 program,program,
 (),()
+{,{
+while,while
+(,(
+nextToABeeper,nextToABeeper
+&,&
+frontIsClear,frontIsClear
+),)
+{,{
+pickbeeper,pickbeeper
+(),()
+;,;
+},}
+if,if
+(,(
+frontIsClear,frontIsClear
+),)
 {,{
 move,move
 (),()
 ;,;
-move,move
+},}
+while,while
+(,(
+anyBeepersInBeeperBag,anyBeepersInBeeperBag
+),)
+{,{
+putbeeper,putbeeper
 (),()
 ;,;
-turnright,turnright
-(),()
-;,;
-turnleft,turnleft
-(),()
-;,;
+},}
 },}
 
 40

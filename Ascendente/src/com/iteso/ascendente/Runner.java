@@ -57,6 +57,7 @@ public class Runner {
 	
 	public static boolean solve(SLRTable table, TokenList tl) throws Exception
 	{
+		String lastCS="";
 		KarelRobot k = new KarelRobot();
 		BufferedWriter bw = null;
 		bw = new BufferedWriter(new FileWriter("src/output.txt"));
@@ -116,15 +117,47 @@ public class Runner {
 			if(!symbols.isEmpty()) {
 				if(symbols.peek().value.equals("while") | symbols.peek().value.equals("if") | symbols.peek().value.equals("iterate"))
 				{
-					bw.write("CS: " + symbols.peek().value +"\n");
+					lastCS = symbols.peek().value;
+					//bw.write("CS: " + symbols.peek().value +"\n");
 				}
 				else if(symbols.peek().value.equals("{"))
 				{
-					bw.write("BR: {"+k.openTag()+"\n");
+					if(lastCS.equals("if"))
+					{
+						bw.write("if,!t" + k.varNumber + ",LABELFALSE"+k.tagNumber +"\nLABELTRUE"+k.tagNumber+":\n");
+						k.tagNumber++;
+						k.varNumber++;
+					}
+					else if (lastCS.equals("while"))
+					{
+						bw.write("LABELTRUE"+ k.tagNumber +":\nif,!t"+ k.varNumber + ",LABELFALSE"+k.tagNumber+"\n");
+						k.tagNumber++;
+						k.varNumber++;
+					}
+					else if (lastCS.equals("iterate"))
+					{
+						
+					}
 				}
 				else if(symbols.peek().value.equals("}"))
 				{
-					bw.write("BR: }"+k.closeTag()+"\n");
+					if(lastCS.equals("if"))
+					{
+						k.tagNumber--;
+						bw.write("LABELFALSE"+k.tagNumber+":\n");						
+					}
+					else if (lastCS.equals("while"))
+					{
+						k.tagNumber--;
+						k.varNumber--;
+						bw.write("if,!t"+ k.varNumber + ",LABELTRUE"+k.tagNumber+"\nLABELFALSE"+k.tagNumber+":\n");	
+						
+					}
+					else if (lastCS.equals("iterate"))
+					{
+						
+					}
+					//bw.write("BR: LABELFALSE"+k.closeTag()+":\n");
 				}
 				else if(symbols.peek().value.equals("move") | symbols.peek().value.equals("turnright") | symbols.peek().value.equals("turnleft") | symbols.peek().value.equals("pickbeeper") | symbols.peek().value.equals("putbeeper") | symbols.peek().value.equals("turnoff")) 
 				{
@@ -163,7 +196,7 @@ public class Runner {
 						JOptionPane.showMessageDialog(null, "Karel wanted to put a beeper with an empty bag.", "UnexpectedError", JOptionPane.ERROR_MESSAGE);
 						return false;
 					}
-					Thread.sleep(3000);
+					Thread.sleep(1000);
 					//bw.write("Karel: " + k.toString()+"\n");
 					k.world.mundoKarel.karelPosX = k.posx;
 					k.world.mundoKarel.karelPosY = k.posy;
@@ -175,7 +208,10 @@ public class Runner {
 					k.evaluateBooleanStatement(prod, symbols);
 					String prodS="";
 					for(Token t : prod.tl)
-						prodS += t.value;
+						if(t.value.equals("BS") | t.value.equals("BE"))
+							prodS += (t.value+""+k.varNumber++);
+						else
+							prodS += t.value;
 					bw.write("Eval: " + prodS + ":" + prod.tl.get(0).bExprValue +"\n");
 				}
 				else if(prod.tl.get(0).value.equals("BE"))
@@ -183,7 +219,10 @@ public class Runner {
 					k.evaluateBooleanExpression(prod, symbols);
 					String prodS="";
 					for(Token t : prod.tl)
-						prodS += t.value;
+						if(t.value.equals("BS") | t.value.equals("BE"))
+							prodS += (t.value+""+k.varNumber++);
+						else
+							prodS += t.value;
 					bw.write("Eval: " + prodS + ":" + prod.tl.get(0).bExprValue +"\n");
 				}
 				if(prod == null)

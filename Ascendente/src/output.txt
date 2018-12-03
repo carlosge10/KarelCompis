@@ -1,0 +1,24 @@
+Eval: BS0>nextToABeeper:true
+Eval: BS1>frontIsClear:true
+Eval: BE2>BS3:true
+Eval: BE4>BS5&BE6:true
+LABELTRUE0:
+if,!t7,LABELFALSE0
+I: pickbeeper
+if,!t7,LABELTRUE0
+LABELFALSE0:
+Eval: BS7>frontIsClear:true
+Eval: BE8>BS9:true
+if,!t10,LABELFALSE0
+LABELTRUE0:
+I: move
+LABELFALSE0:
+Eval: BS11>anyBeepersInBeeperBag:true
+Eval: BE12>BS13:true
+LABELTRUE0:
+if,!t14,LABELFALSE0
+I: putbeeper
+if,!t14,LABELTRUE0
+LABELFALSE0:
+if,!t13,LABELTRUE-1
+LABELFALSE-1:
