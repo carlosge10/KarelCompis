@@ -8,15 +8,18 @@ public class KarelRobot {
 	
 	public int posx;
 	public int posy;
-	
+	public int tagNumber;
+
 	//north = 0, west = 1, south = 2, east = 3
 	public int orientation;
 	
 	public int beepersInBeeperBag;
 	
 	public boolean on;
-	
-//	public boolean lastBooleanStatement;
+	public boolean putbeeperError;
+	public boolean crashError;
+	public boolean pickbeeperError;
+	//public boolean lastBooleanStatement;
 	
 	public KarelRobot() 
 	{
@@ -27,6 +30,10 @@ public class KarelRobot {
 		on = true;
 		world = new KarelWorld();
 //		lastBooleanStatement = true;
+		tagNumber = 0;
+		putbeeperError = false;
+		crashError = false;
+		pickbeeperError = false;
 	}
 	
 	public void executeLine(TokenList prod) 
@@ -151,18 +158,42 @@ public class KarelRobot {
 			{
 				//facing north
 				case 0:
-					posy++;
+					if(posy==100)
+						crashError =true;
+					else
+						if(world.directionBlockedAt(posx, posy, orientation) == true)
+							crashError = true;
+						else
+							posy++;
 					break;
 				//facing west
 				case 1:
-					posx--;
+					if(posx==0)
+						crashError =true;
+					else
+						if(world.directionBlockedAt(posx, posy, orientation) == true)
+							crashError = true;
+						else
+							posx--;
 					break;
 				//facing south
 				case 2:
-					posy--;
+					if(posy==0)
+						crashError = true;
+					else
+						if(world.directionBlockedAt(posx, posy, orientation) == true)
+							crashError = true;
+						else
+							posy--;
 					break;
 				case 3:
-					posx++;
+					if(posx == 100)
+						crashError = true;
+					else
+						if(world.directionBlockedAt(posx, posy, orientation) == true)
+							crashError = true;
+						else
+							posx++;
 					break;
 				//facing east
 				default:
@@ -183,11 +214,25 @@ public class KarelRobot {
 		}
 		else if(inst.equals("pickbeeper")) 
 		{
-			beepersInBeeperBag++;
+			if(world.beeperInPos(posx, posy)) {
+				beepersInBeeperBag++;
+				world.removeBeeper(posx, posy);
+			}
+			else 
+			{
+				pickbeeperError = true;
+			}
 		}
 		else if(inst.equals("putbeeper")) 
 		{
-			beepersInBeeperBag--;
+			if(world.beeperInPos(posx, posy)) {
+				beepersInBeeperBag--;
+				world.addBeeper(posx, posy);
+			}
+			else 
+			{
+				putbeeperError = true;
+			}
 		}
 		else if(inst.equals("turnoff")) 
 		{
@@ -202,8 +247,15 @@ public class KarelRobot {
 	@Override
 	public String toString() {
 		return "{" + "X:" + posx + ", Y:" + posy + ", orientation:" + orientation + ", BeepersInBeeperBag:" + beepersInBeeperBag + ", on:" + on + "}";
+	}	
+	
+	public int openTag() 
+	{
+		return tagNumber++;
 	}
 	
-	
-	
+	public int closeTag() 
+	{
+		return --tagNumber;
+	}
 }

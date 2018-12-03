@@ -9,41 +9,17 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-public class Runner /*extends BasicGame*/{
-	/*public Runner(String gamename)
-	{
-		super(gamename);
-	}
-	@Override
-	public void init(GameContainer gc) throws SlickException {}
-
-	@Override
-	public void update(GameContainer gc, int i) throws SlickException {}
-
-	@Override
-	public void render(GameContainer gc, Graphics g) throws SlickException
-	{
-		g.drawString("Howdy!", 10, 10);
-	}*/
+public class Runner {
 	public static void main(String []args) {
-		/*try
-		{
-			AppGameContainer appgc;
-			appgc = new AppGameContainer(new Runner("Simple Slick Game"));
-			appgc.setDisplayMode(640, 480, false);
-			appgc.start();
-		}
-		catch (SlickException ex)
-		{
-			Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		*/
+
 		try {
 			File file;
 			file = new File("src/input.txt");
@@ -136,6 +112,26 @@ public class Runner /*extends BasicGame*/{
 			}
 			System.out.println("ACCION:");
 			System.out.print(acc.tclass + acc.value + " ");
+
+			if(!symbols.isEmpty()) {
+				if(symbols.peek().value.equals("while") | symbols.peek().value.equals("if") | symbols.peek().value.equals("iterate"))
+				{
+					bw.write("CS: " + symbols.peek().value +"\n");
+				}
+				else if(symbols.peek().value.equals("{"))
+				{
+					bw.write("BR: {"+k.openTag()+"\n");
+				}
+				else if(symbols.peek().value.equals("}"))
+				{
+					bw.write("BR: }"+k.closeTag()+"\n");
+				}
+				else if(symbols.peek().value.equals("move") | symbols.peek().value.equals("turnright") | symbols.peek().value.equals("turnleft") | symbols.peek().value.equals("pickbeeper") | symbols.peek().value.equals("putbeeper") | symbols.peek().value.equals("turnoff")) 
+				{
+					bw.write("I: " + symbols.peek().value +"\n");
+				}
+			}
+
 			//algoritmo
 			if(acc.value == null) 
 			{
@@ -145,7 +141,6 @@ public class Runner /*extends BasicGame*/{
 			else if(acc.tclass.equals("s")) 
 			{
 				st.push(Integer.parseInt(acc.value));
-				//must push to symbols too, but what? -> I know, 
 				symbols.push(tl.tl.get(ptr));
 				ptr++;
 				System.out.println();
@@ -154,30 +149,42 @@ public class Runner /*extends BasicGame*/{
 			{
 				TokenList prod = table.getRule(Integer.parseInt(acc.value));
 				k.executeLine(prod);
-				if(prod.tl.get(2).value.equals("I"))
-					bw.write("Karel: " + k.toString()+"\n");
-				
+				if(prod.tl.get(2).value.equals("I")) {
+					if(k.crashError) {
+						JOptionPane.showMessageDialog(null, "Karel crashed into a wall.", "UnexpectedError", JOptionPane.ERROR_MESSAGE);
+						return false;
+					}
+					else if(k.pickbeeperError)
+					{
+						JOptionPane.showMessageDialog(null, "Karel wanted to pick a beeper in an empty position.", "UnexpectedError", JOptionPane.ERROR_MESSAGE);
+						return false;
+					}
+					else if(k.putbeeperError) {
+						JOptionPane.showMessageDialog(null, "Karel wanted to put a beeper with an empty bag.", "UnexpectedError", JOptionPane.ERROR_MESSAGE);
+						return false;
+					}
+					Thread.sleep(3000);
+					//bw.write("Karel: " + k.toString()+"\n");
+					k.world.mundoKarel.karelPosX = k.posx;
+					k.world.mundoKarel.karelPosY = k.posy;
+					k.world.mundoKarel.karelOrientation = k.orientation;
+					k.world.mundoKarel.repaint();
+				}
 				else if(prod.tl.get(0).value.equals("BS"))
 				{
-					//TODO:
-					//must evaluate the expression USING symbols stack, and save values there
 					k.evaluateBooleanStatement(prod, symbols);
 					String prodS="";
 					for(Token t : prod.tl)
 						prodS += t.value;
 					bw.write("Eval: " + prodS + ":" + prod.tl.get(0).bExprValue +"\n");
-					
 				}
 				else if(prod.tl.get(0).value.equals("BE"))
 				{
-					//TODO:
-					//must evaluate the expression USING symbols stack, and save values there
 					k.evaluateBooleanExpression(prod, symbols);
 					String prodS="";
 					for(Token t : prod.tl)
 						prodS += t.value;
 					bw.write("Eval: " + prodS + ":" + prod.tl.get(0).bExprValue +"\n");
-					
 				}
 				if(prod == null)
 				{
@@ -187,11 +194,11 @@ public class Runner /*extends BasicGame*/{
 				for(int i=2; i<prod.tl.size(); i++) 
 				{
 					st.pop();
-//					if(!symbols.isEmpty())
+					//if(!symbols.isEmpty())
 						symbols.pop();
 				}
 				symbols.push(prod.tl.get(0));
-				int gt =table.getGoto(st.peek(), prod.tl.get(0).value); 
+				int gt =table.getGoto(st.peek(), prod.tl.get(0).value);
 				if(gt == -1)
 					return false;
 				st.push(gt);
@@ -199,7 +206,6 @@ public class Runner /*extends BasicGame*/{
 					System.out.print(p.value);
 				}
 				System.out.println();
-				
 			}
 			else if(acc.tclass.equals("acc")) {
 				System.out.println("Aceptada");

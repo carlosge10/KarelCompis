@@ -4,10 +4,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import javax.swing.JFrame;
+
 public class KarelWorld {
 	public int beepers[][];
 //	only keep track of walls at north and east of a position
 	public int walls[][];
+	public componenteDibujo mundoKarel;
 	public KarelWorld() 
 	{
 		beepers = new int[100][100];
@@ -48,6 +51,30 @@ public class KarelWorld {
 					walls[i][j] = Integer.parseInt(arr[j]);
 				}
 			}
+			
+			/*Graphics*/
+			
+			JFrame ventana = new JFrame();
+			ventana.setSize(1070,780);
+			ventana.setTitle("Karel");
+			ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			ventana.setVisible(true);
+			
+			mundoKarel = new componenteDibujo();
+			mundoKarel.pBeepers = beepers;
+			mundoKarel.pWalls = walls;
+			mundoKarel.columnas = 100;
+			mundoKarel.renglones = 100;
+			
+			// Posiciona a Karel		
+			mundoKarel.karelPosX = 0;
+			mundoKarel.karelPosY = 0;
+			mundoKarel.karelOrientation = 0;
+			
+			// Muestra al Karel en su posicion inicial
+			ventana.add(mundoKarel);
+			
+			/*Graphics*/
 		}
 		catch(Exception e) 
 		{
